@@ -30,12 +30,12 @@
   2019. 09. 05.          - 프로그램 최초 실행 감지 루틴을 모듈 내 InitEepCommonConfig() 함수에 추가.
   Jeong Hyun Gu            이제 어플리케이션에서 시그니쳐 확인하여 초기화를 실행 여부를 판단할 필요없이
                           tag_EepCommonConfig::Bit.FirstExecute 비트가 '1'이면 최초 실행으로 판단.
-                        - 이전 버전에서 업데이트 시 AVR-EESAVE 불가.
+                         - 이전 버전에서 업데이트 시 AVR-EESAVE 불가.
 
   2019. 07. 23.          - Eeprom_Write(), Eeprom_Read() 삭제하고 HAL 적용.
   Jeong Hyun Gu          - 접두어 AVR -> SYS로 변경.
-                        - GetDataFromEeprom() 삭제.
-                        - "tag_EepCommonConfig" 추가.
+                         - GetDataFromEeprom() 삭제.
+                         - "tag_EepCommonConfig" 추가.
 
   2019. 01. 14.          - CPU타입 __AVR_ATMEGA2560__ 추가.
   Jeong Hyun Gu
