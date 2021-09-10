@@ -1,7 +1,7 @@
 # SysEeprom
 embedded EEPROM manage library
 
-- managing AVR internal EEPROM memory.
+- managing embedded EEPROM memory.
 - automatically allocate data cluster.
 - improved memory endurance. ( data overwrite protection )
 - support Hardware Abstraction Layer (HAL) for various cpu.
