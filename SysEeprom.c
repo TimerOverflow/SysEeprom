@@ -7,7 +7,7 @@
 #include <string.h>
 #include "SysEeprom.h"
 /*********************************************************************************/
-#if(SYS_EEPROM_REVISION_DATE != 20200115)
+#if(SYS_EEPROM_REVISION_DATE != 20200417)
 #error wrong include file. (SysEeprom.h)
 #endif
 /*********************************************************************************/
@@ -74,12 +74,7 @@ tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*Hal
 		DoEepReadControl(&EepSignature);
 		if((StrSignature[0] != 'J') || (StrSignature[1] != 'H') || (StrSignature[2] != 'G'))
 		{
-			StrSignature[0] = 'J'; StrSignature[1] = 'H'; StrSignature[2] = 'G';
-			SetEepWriteEnable(&EepSignature);
-			while(DoEepWriteControl(&EepSignature) == true)
-			{
-				EepConfig->Bit.FirstExecute = true;
-			}
+			EepConfig->Bit.FirstExecute = true;
 		}
 	}
 	
@@ -166,6 +161,7 @@ void DoEepReadControl(tag_EepControl *Eep)
 tU8 DoEepWriteControl(tag_EepControl *Eep)
 {
 	tU16 *pIndex = (tU16 *) &Eep->Index;
+	tag_EepCommonConfig *Config = (tag_EepCommonConfig *) Eep->Config;
 	tag_EepBitField *pBit;
 	tU8 Data = 0;
 
@@ -184,30 +180,41 @@ tU8 DoEepWriteControl(tag_EepControl *Eep)
 			- 값이 유효하여 쓰기를 진행하거나 해당영역의 마지막에 도달할 경우에만 while loop를 탈출한다.
 	*/
 
-	if((Eep->Bit.InitComplete == false) || (Eep->Config->Bit.ReadFail == true) || (Eep->Config->Bit.WriteFail == true) || (Eep->Bit.Write == false))
+	if((Eep->Bit.InitComplete == false) || (Config->Bit.ReadFail == true) || (Config->Bit.WriteFail == true))
 	{
 		return false;
 		/* error or disabled */
 	}
-
-	while(true)
+	
+	if(Eep->Bit.Write == true)
 	{
-		EepRead((tag_EepCommonConfig *) Eep->Config, Eep->EepBase + (*pIndex), &Data);
-		if(Data != Eep->DataBase[*pIndex])
+		Config->SignatureWriteDelay = 5;
+		while(true)
 		{
-			EepWrite((tag_EepCommonConfig *) Eep->Config, Eep->EepBase + (*pIndex), Eep->DataBase[*pIndex]);
-			return true;
-			/* check valid data */
-		}
-
-		if(++(*pIndex) >= Eep->Length)
-		{
-			pBit = (tag_EepBitField *) &Eep->Bit;
-			pBit->Write = false;
-			return false;
-			/* end of sector */
+			EepRead(Config, Eep->EepBase + (*pIndex), &Data);
+			if(Data != Eep->DataBase[*pIndex])
+			{
+				EepWrite(Config, Eep->EepBase + (*pIndex), Eep->DataBase[*pIndex]);
+				return true;
+				/* check valid data */
+			}
+	
+			if(++(*pIndex) >= Eep->Length)
+			{
+				pBit = (tag_EepBitField *) &Eep->Bit;
+				pBit->Write = false;
+				return false;
+				/* end of sector */
+			}
 		}
 	}
+	else if(Config->Bit.FirstExecute)
+	{
+		if(Config->SignatureWriteDelay == 0){ EepWrite(Config, 0, 'J'); EepWrite(Config, 1, 'H'); EepWrite(Config, 2, 'G'); Config->Bit.FirstExecute = false; }
+		else{ Config->SignatureWriteDelay--; }
+	}
+	
+	return false;
 }
 /*********************************************************************************/
 void SetEepWriteEnable(tag_EepControl *Eep)

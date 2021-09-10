@@ -9,10 +9,13 @@
 /*********************************************************************************/
 #include "SysTypedef.h"
 /*********************************************************************************/
-#define SYS_EEPROM_REVISION_DATE		20200115
+#define SYS_EEPROM_REVISION_DATE		20200417
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2020. 04. 17.					- tag_EepCommonConfig의 시그니처는 연결된 모든 tag_EepControl 인스턴스들이
+	Jeong Hyun Gu						write동작을 끝냈을 때 write하도록 변경.
+
 	2020. 01. 15.					- 실제 Eeprom과의 정상 동작 여부 확인 기능 추가.
 	Jeong Hyun Gu					- CheckEepromError() 함수 추가. 'tag_EepCommonConfig'에서 관리 하는 실제
 													Eeprom의 정상 동작 여부 확인.
@@ -80,6 +83,7 @@ typedef struct
 
 	const tU16 LastAddr;					// eeprom마지막 주소(크기)
 	tU16 AllocEepAddr;
+	tU8 SignatureWriteDelay;
 
 	tU8 (*HalEepromWrite)(tU16 Addr, tU8 Data);
 	tU8 (*HalEepromRead)(tU16 Addr, tU8 *pData);
