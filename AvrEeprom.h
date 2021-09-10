@@ -7,8 +7,13 @@
 #ifndef __AVR_EEPROM_H__
 #define	__AVR_EEPROM_H__
 /*********************************************************************************/
+#define AVR_EEPROM_REVISION_DATE		20161108
+/*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2016. 11. 08.					- revision valid check 추가.
+	Jung Hyun Gu
+
 	2016. 10. 28.					- DoEepWriteControl() 반환값 수정.
 	Jung Hyun Gu					- 반환값 관련 주석 추가.
 
@@ -94,3 +99,14 @@ char Eeprom_Read(unsigned int Addr);
 
 /*********************************************************************************/
 #endif //__AVR_EEPROM_H__
+
+
+
+
+
+
+
+
+
+
+
