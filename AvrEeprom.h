@@ -7,10 +7,13 @@
 #ifndef __AVR_EEPROM_H__
 #define	__AVR_EEPROM_H__
 /*********************************************************************************/
-#define AVR_EEPROM_REVISION_DATE		20180921
+#define AVR_EEPROM_REVISION_DATE		20190114
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2019. 01. 14.					- CPU타입 __AVR_ATMEGA2560__ 추가.
+	Jeong Hyun Gu
+
 	2018. 09. 21.					- DoEepWriteControl() 함수에서 Length 보다 1바이트 더 쓰던 현상 수정.
 	Jeong Hyun Gu
 
@@ -36,7 +39,7 @@
 #define	false		0
 
 
-#define __AVR_ATMEGA128__
+#define __AVR_ATMEGA2560__
 
 
 #ifdef __AVR_ATMEGA8__
@@ -65,6 +68,12 @@
 
 #ifdef __AVR_ATMEGA128__
 #include <iom128.h>
+#define	EEPROM_SIZE		4096
+/* Endurance: 100,000 Write/Erase */
+#endif
+
+#ifdef __AVR_ATMEGA2560__
+#include <iom2560.h>
 #define	EEPROM_SIZE		4096
 /* Endurance: 100,000 Write/Erase */
 #endif

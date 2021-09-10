@@ -7,7 +7,7 @@
 #include <ina90.h>
 #include "AvrEeprom.h"
 /*********************************************************************************/
-#if(AVR_EEPROM_REVISION_DATE != 20180921)
+#if(AVR_EEPROM_REVISION_DATE != 20190114)
 #error wrong include file. (AvrEeprom.h)
 #endif
 /*********************************************************************************/
