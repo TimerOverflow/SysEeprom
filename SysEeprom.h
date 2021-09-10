@@ -1,16 +1,23 @@
 /*********************************************************************************/
 /*
  * Author : Jeong Hyun Gu
- * File name : AvrEeprom.h
+ * File name : SysEeprom.h
 */
 /*********************************************************************************/
-#ifndef __AVR_EEPROM_H__
-#define	__AVR_EEPROM_H__
+#ifndef __SYS_EEPROM_H__
+#define	__SYS_EEPROM_H__
 /*********************************************************************************/
-#define AVR_EEPROM_REVISION_DATE		20190114
+#include "SysTypedef.h"
+/*********************************************************************************/
+#define SYS_EEPROM_REVISION_DATE		20190723
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2019. 07. 23.					- Eeprom_Write(), Eeprom_Read() 삭제하고 HAL 적용.
+	Jeong Hyun Gu					- 접두어 AVR -> SYS로 변경.
+												- GetDataFromEeprom() 삭제.
+												- "tag_EepCommonConfig" 추가.
+
 	2019. 01. 14.					- CPU타입 __AVR_ATMEGA2560__ 추가.
 	Jeong Hyun Gu
 
@@ -38,46 +45,6 @@
 #define	true		1
 #define	false		0
 
-
-#define __AVR_ATMEGA2560__
-
-
-#ifdef __AVR_ATMEGA8__
-#include <iom8.h>
-#define	EEPROM_SIZE		512
-/* Endurance: 100,000 Write/Erase */
-#endif
-
-#ifdef __AVR_ATMEGA16__
-#include <iom16.h>
-#define	EEPROM_SIZE		512
-/* Endurance: 100,000 Write/Erase */
-#endif
-
-#ifdef __AVR_ATMEGA32__
-#include <iom32.h>
-#define	EEPROM_SIZE		1024
-/* Endurance: 100,000 Write/Erase */
-#endif
-
-#ifdef __AVR_ATMEGA64__
-#include <iom64.h>
-#define	EEPROM_SIZE		2048
-/* Endurance: 100,000 Write/Erase */
-#endif
-
-#ifdef __AVR_ATMEGA128__
-#include <iom128.h>
-#define	EEPROM_SIZE		4096
-/* Endurance: 100,000 Write/Erase */
-#endif
-
-#ifdef __AVR_ATMEGA2560__
-#include <iom2560.h>
-#define	EEPROM_SIZE		4096
-/* Endurance: 100,000 Write/Erase */
-#endif
-
 /*********************************************************************************/
 /**Enum**/
 
@@ -87,33 +54,46 @@
 
 typedef struct
 {
-	char Init						:		1;
-	char Write					:		1;
+	struct
+	{
+		tU8 Init						:		1;
+	}Bit;
+
+	const tU16 LastAddr;					// eeprom마지막 주소(크기)
+	tU16 AllocEepAddr;
+
+	tU8 (*EepromWrite)(tU16 Addr, tU8 Data);
+	tU8 (*EepromRead)(tU16 Addr, tU8 *pData);
+}tag_EepCommonConfig;
+
+typedef struct
+{
+	tU8 InitGeneral			:		1;
+	tU8 InitComplete		:		1;
+	tU8 Write						:		1;
 }tag_EepBitField;
 
-typedef const struct
+typedef struct
 {
-	char *DataBase;								// 관리할 데이터의 시작 주소
-	unsigned int EepBase; 				// eeprom의 시작 주소
-	unsigned int Index;	 					// 쓰기 인덱스
-	unsigned int Length; 					// 관리할 데이터의 길이
+	const tag_EepBitField Bit;
+	const tag_EepCommonConfig *Config;
 
-	tag_EepBitField Bit;
+	const tU16 EepBase; 					// eeprom의 시작 주소
+	const tU8 *DataBase;					// 관리할 데이터의 시작 주소
+
+	const tU16 Index;	 					// 쓰기 인덱스
+ 	const tU16 Length; 					// 관리할 데이터의 길이
 }tag_EepControl;
 
 /*********************************************************************************/
 /**Function**/
 
-char InitEepControl(tag_EepControl *Eep, const unsigned char *DataBase, unsigned int Length);
+tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*EepromWrite)(tU16 Addr, tU8 Data), tU8 (*EepromRead)(tU16 Addr, tU8 *pData));
+tU8 InitEepControl(tag_EepControl *Eep, const tU8 *DataBase, tU16 Length, tag_EepCommonConfig *EepConfig);
 
-void DoEepReadControl(tag_EepControl *Eep);
-void GetDataFromEeprom(char* const Dest, const int EepBase, int Length);
-
-char DoEepWriteControl(tag_EepControl *Eep);
 void SetEepWriteEnable(tag_EepControl *Eep);
-
-void Eeprom_Write(unsigned int Addr, char Data);
-char Eeprom_Read(unsigned int Addr);
+void DoEepReadControl(tag_EepControl *Eep);
+tU8 DoEepWriteControl(tag_EepControl *Eep);
 
 /*********************************************************************************/
-#endif //__AVR_EEPROM_H__
+#endif //__SYS_EEPROM_H__
