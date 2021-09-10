@@ -60,39 +60,29 @@ tU8 HalEepromRead(tU16 Addr, tU8 *pData)
 void main( void )
 {
   unsigned char i;
-  tU8 Signature[2];
   
   InitEepCommonConfig(&EepConfig, __EEPROM_SIZE__, HalEepromWrite, HalEepromRead);
   InitEepControl(&EepVar, (unsigned char *) &Var, sizeof(Var), &EepConfig);
   InitEepControl(&EepArray, Array, sizeof(Array), &EepConfig);
   
-  HalEepromRead(__EEPROM_SIZE__ - 10, &Signature[0]);
-  HalEepromRead(__EEPROM_SIZE__ - 9, &Signature[1]);
-  if((Signature[0] != 'O') || (Signature[1] != 'K'))   //check first init.
+  if(EepConfig.Bit.FirstExecute == true)
   {
-    HalEepromRead(__EEPROM_SIZE__ - 10, &Signature[0]);
-    HalEepromRead(__EEPROM_SIZE__ - 9, &Signature[1]);
-    if((Signature[0] != 'O') || (Signature[1] != 'K'))
+    Var.Data1 = 10;
+    Var.Data2 = 1000;
+    Var.Data3 = 3.14;
+    SetEepWriteEnable(&EepVar);
+    
+    for(i = 0; i < 10; i++)
     {
-      Var.Data1 = 10;
-      Var.Data2 = 1000;
-      Var.Data3 = 3.14;
-      SetEepWriteEnable(&EepVar);
-      while(DoEepWriteControl(&EepVar) == true);
-      
-      for(i = 0; i < 10; i++)
-      {
-        Array[i] = i;
-      }
-      SetEepWriteEnable(&EepArray);
-      while(DoEepWriteControl(&EepArray) == true);
-      
-      HalEepromWrite(__EEPROM_SIZE__ - 10, 'O'); HalEepromWrite(__EEPROM_SIZE__ - 9, 'K');
+      Array[i] = i;
     }
+    SetEepWriteEnable(&EepArray);
   }
-  
-  DoEepReadControl(&EepVar);
-  DoEepReadControl(&EepArray);
+  else
+  {
+    DoEepReadControl(&EepVar);
+    DoEepReadControl(&EepArray);
+  }
   
   while(1)
   {
