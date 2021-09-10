@@ -7,7 +7,7 @@
 #include <string.h>
 #include "SysEeprom.h"
 /*********************************************************************************/
-#if(SYS_EEPROM_REVISION_DATE != 20190905)
+#if(SYS_EEPROM_REVISION_DATE != 20190924)
 #error wrong include file. (SysEeprom.h)
 #endif
 /*********************************************************************************/

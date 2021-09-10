@@ -65,7 +65,7 @@ void main( void )
   InitEepControl(&EepVar, (unsigned char *) &Var, sizeof(Var), &EepConfig);
   InitEepControl(&EepArray, Array, sizeof(Array), &EepConfig);
   
-  if(EepConfig.Bit.FirstExecute == true)
+  if(CheckEepromFirstExecuteSignature(&EepConfig) == true)
   {
     Var.Data1 = 10;
     Var.Data2 = 1000;
