@@ -3,7 +3,7 @@
 <Workspace>
   <ConfigDictionary>
     <CurrentConfigs>
-      <Project>AvrEeprom/Debug</Project>
+      <Project>SysEeprom/Release</Project>
     </CurrentConfigs>
   </ConfigDictionary>
   <Desktop>
@@ -27,12 +27,12 @@
       <Wnd2>
         <Tabs>
           <Tab>
-            <Identity>TabID-16745-3717</Identity>
+            <Identity>TabID-2402-14425</Identity>
             <TabName>Workspace</TabName>
             <Factory>Workspace</Factory>
             <Session>
               <NodeDict>
-                <ExpandedNode>AvrEeprom</ExpandedNode>
+                <ExpandedNode>SysEeprom</ExpandedNode>
               </NodeDict>
             </Session>
           </Tab>
@@ -42,7 +42,7 @@
       <Wnd3>
         <Tabs>
           <Tab>
-            <Identity>TabID-22559-4018</Identity>
+            <Identity>TabID-24192-14631</Identity>
             <TabName>Build</TabName>
             <Factory>Build</Factory>
             <Session/>
@@ -57,19 +57,11 @@
           <Factory>TextEditor</Factory>
           <Filename>$WS_DIR$\main.c</Filename>
           <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>345</SelStart>
-          <SelEnd>345</SelEnd>
+          <YPos>45</YPos>
+          <SelStart>1324</SelStart>
+          <SelEnd>1324</SelEnd>
         </Tab>
         <ActiveTab>0</ActiveTab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\..\AvrEeprom.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>537</SelStart>
-          <SelEnd>537</SelEnd>
-        </Tab>
       </Pane>
       <ActivePane>0</ActivePane>
       <Sizes>
@@ -84,9 +76,9 @@
       <Top>
         <Row0>
           <Sizes>
-            <Toolbar-04a76930>
+            <Toolbar-06b56930>
               <key>iaridepm.enu1</key>
-            </Toolbar-04a76930>
+            </Toolbar-06b56930>
           </Sizes>
         </Row0>
       </Top>
@@ -97,16 +89,16 @@
               <Rect>
                 <Top>-2</Top>
                 <Left>-2</Left>
-                <Bottom>754</Bottom>
+                <Bottom>753</Bottom>
                 <Right>198</Right>
                 <x>-2</x>
                 <y>-2</y>
                 <xscreen>200</xscreen>
                 <yscreen>200</yscreen>
-                <sizeHorzCX>104167</sizeHorzCX>
-                <sizeHorzCY>200602</sizeHorzCY>
-                <sizeVertCX>104167</sizeVertCX>
-                <sizeVertCY>758275</sizeVertCY>
+                <sizeHorzCX>140449</sizeHorzCX>
+                <sizeHorzCY>200803</sizeHorzCY>
+                <sizeVertCX>140449</sizeVertCX>
+                <sizeVertCY>758032</sizeVertCY>
               </Rect>
             </Wnd2>
           </Sizes>
@@ -125,15 +117,15 @@
                 <Top>-2</Top>
                 <Left>-2</Left>
                 <Bottom>198</Bottom>
-                <Right>1922</Right>
+                <Right>1426</Right>
                 <x>-2</x>
                 <y>-2</y>
-                <xscreen>1924</xscreen>
+                <xscreen>1428</xscreen>
                 <yscreen>200</yscreen>
-                <sizeHorzCX>1002083</sizeHorzCX>
-                <sizeHorzCY>200602</sizeHorzCY>
-                <sizeVertCX>104167</sizeVertCX>
-                <sizeVertCY>200602</sizeVertCY>
+                <sizeHorzCX>1002809</sizeHorzCX>
+                <sizeHorzCY>200803</sizeHorzCY>
+                <sizeVertCX>140449</sizeVertCX>
+                <sizeVertCY>200803</sizeVertCY>
               </Rect>
             </Wnd3>
           </Sizes>

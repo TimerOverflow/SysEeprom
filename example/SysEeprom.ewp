@@ -898,7 +898,7 @@
         </option>
         <option>
           <name>ExtraOutputFile</name>
-          <state>AvrEeprom.a90</state>
+          <state>SysEeprom.a90</state>
         </option>
         <option>
           <name>ExtraOutputFormat</name>
@@ -1133,7 +1133,7 @@
         </option>
         <option>
           <name>RTLibraryPath</name>
-          <state>$TOOLKIT_DIR$\LIB\CLIB\cl3s-ec_mul-sf.r90</state>
+          <state>$TOOLKIT_DIR$\LIB\CLIB\cl0t.r90</state>
         </option>
         <option>
           <name>Input variant</name>
@@ -1893,7 +1893,7 @@
         </option>
         <option>
           <name>ExtraOutputFile</name>
-          <state>AvrEeprom.a90</state>
+          <state>SysEeprom.a90</state>
         </option>
         <option>
           <name>ExtraOutputFormat</name>
@@ -1991,10 +1991,10 @@
     </settings>
   </configuration>
   <file>
-    <name>$PROJ_DIR$\..\AvrEeprom.c</name>
+    <name>$PROJ_DIR$\main.c</name>
   </file>
   <file>
-    <name>$PROJ_DIR$\main.c</name>
+    <name>$PROJ_DIR$\..\SysEeprom.c</name>
   </file>
 </project>
 
