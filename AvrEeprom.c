@@ -7,7 +7,7 @@
 #include <ina90.h>
 #include "AvrEeprom.h"
 /*********************************************************************************/
-#if(AVR_EEPROM_REVISION_DATE != 20161226)
+#if(AVR_EEPROM_REVISION_DATE != 20180921)
 #error wrong include file. (AvrEeprom.h)
 #endif
 /*********************************************************************************/
@@ -32,7 +32,7 @@ char InitEepControl(tag_EepControl *Eep, const unsigned char *DataBase, unsigned
 			- Length : 관리할 대상의 크기
 
 		2) 반환
-		  - 초기화 성공 여부
+			- 초기화 성공 여부
 
 		3) 설명
 			- tag_EepControl 인스턴스를 초기화한다.
@@ -64,7 +64,7 @@ void DoEepReadControl(tag_EepControl *Eep)
 			- Eep : tag_EepControl 인스턴스의 주소
 
 		2) 반환
-		  - 없음.
+			- 없음.
 
 		3) 설명
 			- 해당 인스턴스의 eeprom으로 부터 데이터를 읽어와 대상 버퍼에 값을 대입.
@@ -115,7 +115,7 @@ char DoEepWriteControl(tag_EepControl *Eep)
 			- Eep : tag_EepControl 인스턴스의 주소
 
 		2) 반환
-		  - 쓰기동작 중일 때 true, 그외 상황일 때 false.
+			- 쓰기동작 중일 때 true, 그외 상황일 때 false.
 
 		3) 설명
 			- 해당 인스턴스의 eeprom 영역에 관리할 대상 데이터를 쓰기를 진행한다.
@@ -141,7 +141,7 @@ char DoEepWriteControl(tag_EepControl *Eep)
 			/* check valid data */
 		}
 
-		if(++(*pIndex) > Eep->Length)
+		if(++(*pIndex) >= Eep->Length)
 		{
 			pBit = (tag_EepBitField *) &Eep->Bit;
 			pBit->Write = false;

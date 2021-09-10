@@ -7,10 +7,13 @@
 #ifndef __AVR_EEPROM_H__
 #define	__AVR_EEPROM_H__
 /*********************************************************************************/
-#define AVR_EEPROM_REVISION_DATE		20161226
+#define AVR_EEPROM_REVISION_DATE		20180921
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2018. 09. 21.					- DoEepWriteControl() 함수에서 Length 보다 1바이트 더 쓰던 현상 수정.
+	Jeong Hyun Gu
+
 	2016. 12. 26.					- Eeprom_Write(), Eeprom_Read() 함수에서 WDT RESET 추가.
 	Jeong Hyun Gu
 
@@ -33,7 +36,7 @@
 #define	false		0
 
 
-#define __AVR_ATMEGA64__
+#define __AVR_ATMEGA128__
 
 
 #ifdef __AVR_ATMEGA8__
