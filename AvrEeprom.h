@@ -1,27 +1,30 @@
 /*********************************************************************************/
 /*
- * Author : Jung Hyun Gu
+ * Author : Jeong Hyun Gu
  * File name : AvrEeprom.h
 */
 /*********************************************************************************/
 #ifndef __AVR_EEPROM_H__
 #define	__AVR_EEPROM_H__
 /*********************************************************************************/
-#define AVR_EEPROM_REVISION_DATE		20161130
+#define AVR_EEPROM_REVISION_DATE		20161226
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2016. 12. 26.					- Eeprom_Write(), Eeprom_Read() 함수에서 WDT RESET 추가.
+	Jeong Hyun Gu
+
 	2016. 11. 30.					- DoEepReadControl(), GetDataFromEeprom() 함수에서 Length 보다 1바이트 더 읽던 현상 수정.
-	Jung Hyun Gu
+	Jeong Hyun Gu
 
 	2016. 11. 08.					- revision valid check 추가.
-	Jung Hyun Gu
+	Jeong Hyun Gu
 
 	2016. 10. 28.					- DoEepWriteControl() 반환값 수정.
-	Jung Hyun Gu					- 반환값 관련 주석 추가.
+	Jeong Hyun Gu					- 반환값 관련 주석 추가.
 
 	2016. 10. 28.					- 초기버전.
-	Jung Hyun Gu
+	Jeong Hyun Gu
 */
 /*********************************************************************************/
 /**Define**/
@@ -80,9 +83,9 @@ typedef const struct
 {
 	char *DataBase;								// 관리할 데이터의 시작 주소
 	unsigned int EepBase; 				// eeprom의 시작 주소
-	unsigned int Index;	 					// 쓰기 인덱스 
+	unsigned int Index;	 					// 쓰기 인덱스
 	unsigned int Length; 					// 관리할 데이터의 길이
-	
+
 	tag_EepBitField Bit;
 }tag_EepControl;
 
@@ -102,14 +105,3 @@ char Eeprom_Read(unsigned int Addr);
 
 /*********************************************************************************/
 #endif //__AVR_EEPROM_H__
-
-
-
-
-
-
-
-
-
-
-
