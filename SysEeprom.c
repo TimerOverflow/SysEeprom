@@ -7,7 +7,7 @@
 #include <string.h>
 #include "SysEeprom.h"
 /*********************************************************************************/
-#if(SYS_EEPROM_REVISION_DATE != 20190924)
+#if(SYS_EEPROM_REVISION_DATE != 20191001)
 #error wrong include file. (SysEeprom.h)
 #endif
 /*********************************************************************************/
@@ -42,6 +42,7 @@ tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*Eep
 	*pLastAddr = LastAddr;
 	EepConfig->EepromWrite = EepromWrite;
 	EepConfig->EepromRead = EepromRead;
+	EepConfig->AllocEepAddr = 0;
 	EepConfig->Bit.Init = true;
 	
 	memset((void *) StrSignature, 0, sizeof(StrSignature));
@@ -216,3 +217,28 @@ void SetEepWriteEnable(tag_EepControl *Eep)
 	*pIndex = 0;
 }
 /*********************************************************************************/
+void EraseEepCommonConfigSignature(tag_EepCommonConfig *EepConfig)
+{
+	/*
+		1) 인수
+			- EepConfig : EepConfig 인스턴스의 주소
+
+		2) 반환
+			- 없음.
+
+		3) 설명
+			- EepConfig에서 최초 실행 여부를 확인하기 위한 참조 값인 Signature 값 삭제.
+			- 본 함수 실행 후 
+	*/
+
+	if(EepConfig->Bit.Init == false)
+	{
+		return;
+	}
+	
+	EepConfig->EepromWrite(0, 0);
+	EepConfig->EepromWrite(1, 0);
+	EepConfig->EepromWrite(2, 0);
+}
+/*********************************************************************************/
+

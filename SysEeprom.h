@@ -9,10 +9,14 @@
 /*********************************************************************************/
 #include "SysTypedef.h"
 /*********************************************************************************/
-#define SYS_EEPROM_REVISION_DATE		20190924
+#define SYS_EEPROM_REVISION_DATE		20191001
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2019. 10. 01.					- EraseEepCommonConfigSignature() 함수 추가. InitEepCommonConfig()에서
+	Jeong Hyun Gu						최초 실행 여부를 확인하는데 사용하는 참조 값 Signature를 지워 다음 실행에서
+													공장 초기화 실행 가능.
+
 	2019. 09. 24.					- CheckEepromFirstExecuteSignature() 매크로 함수 추가. 직접 비트 필드에
 	Jeong Hyun Gu						접근하지 않고 위 매크로 함수로 접근.
 
@@ -101,6 +105,8 @@ tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*Eep
 tU8 InitEepControl(tag_EepControl *Eep, const tU8 *DataBase, tU16 Length, tag_EepCommonConfig *EepConfig);
 
 #define CheckEepromFirstExecuteSignature(Eepconfig)					((Eepconfig)->Bit.FirstExecute)
+void EraseEepCommonConfigSignature(tag_EepCommonConfig *EepConfig);
+
 void SetEepWriteEnable(tag_EepControl *Eep);
 void DoEepReadControl(tag_EepControl *Eep);
 tU8 DoEepWriteControl(tag_EepControl *Eep);
