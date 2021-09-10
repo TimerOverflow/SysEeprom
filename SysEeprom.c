@@ -7,7 +7,7 @@
 #include <string.h>
 #include "SysEeprom.h"
 /*********************************************************************************/
-#if(SYS_EEPROM_REVISION_DATE != 20191001)
+#if(SYS_EEPROM_REVISION_DATE != 20200115)
 #error wrong include file. (SysEeprom.h)
 #endif
 /*********************************************************************************/
@@ -19,7 +19,27 @@ static inline tU8 CheckAllOfInit(tag_EepControl *Eep)
 	return (Eep->Bit.InitGeneral) ? true : false;
 }
 /*********************************************************************************/
-tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*EepromWrite)(tU16 Addr, tU8 Data), tU8 (*EepromRead)(tU16 Addr, tU8 *pData))
+static void EepWrite(tag_EepCommonConfig *EepConfig, tU16 Addr, tU8 Data)
+{
+	tU8 Cnt = 0;
+	
+	while(EepConfig->HalEepromWrite(Addr, Data) == false)
+	{
+		if(++Cnt >= 5){ EepConfig->Bit.WriteFail = true; return; }
+	}
+}
+/*********************************************************************************/
+static void EepRead(tag_EepCommonConfig *EepConfig, tU16 Addr, tU8 *Data)
+{
+	tU8 Cnt = 0;
+	
+	while(EepConfig->HalEepromRead(Addr, Data) == false)
+	{
+		if(++Cnt >= 5){ EepConfig->Bit.ReadFail = true; return; }
+	}
+}
+/*********************************************************************************/
+tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*HalEepromWrite)(tU16 Addr, tU8 Data), tU8 (*HalEepromRead)(tU16 Addr, tU8 *pData))
 {
 	tU16 *pLastAddr = (tU16 *) &EepConfig->LastAddr;
 	static tag_EepControl EepSignature = { .Bit.InitGeneral = false };
@@ -28,8 +48,8 @@ tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*Eep
 	/*
 		1) 인수
 			- EepConfig : EepConfig 인스턴스의 주소
-			- EepromWrite : 사용자가 구현한 EepromWrite 함수 포인터 주소
-			- EepromRead : 사용자가 구현한 EepromRead 함수 포인터 주소
+			- HalEepromWrite : 사용자가 구현한 HalEepromWrite 함수 포인터 주소
+			- HalEepromRead : 사용자가 구현한 HalEepromRead 함수 포인터 주소
 
 		2) 반환
 			- 초기화 성공 여부
@@ -40,8 +60,8 @@ tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*Eep
 	*/
 
 	*pLastAddr = LastAddr;
-	EepConfig->EepromWrite = EepromWrite;
-	EepConfig->EepromRead = EepromRead;
+	EepConfig->HalEepromWrite = HalEepromWrite;
+	EepConfig->HalEepromRead = HalEepromRead;
 	EepConfig->AllocEepAddr = 0;
 	EepConfig->Bit.Init = true;
 	
@@ -130,7 +150,7 @@ void DoEepReadControl(tag_EepControl *Eep)
 			- 해당 인스턴스의 eeprom으로 부터 데이터를 읽어와 대상 버퍼에 값을 대입.
 	*/
 
-	if(Eep->Bit.InitComplete == false)
+	if((Eep->Bit.InitComplete == false) || (Eep->Config->Bit.ReadFail == true) || (Eep->Config->Bit.WriteFail == true))
 	{
 		return;
 		/* error or disabled */
@@ -138,7 +158,7 @@ void DoEepReadControl(tag_EepControl *Eep)
 
 	do
 	{
-		Eep->Config->EepromRead(Eep->EepBase + (Index), &Data);
+		EepRead((tag_EepCommonConfig *) Eep->Config, Eep->EepBase + (Index), &Data);
 		pDataBase[Index] = Data;
 	}while(++Index < Eep->Length);
 }
@@ -164,7 +184,7 @@ tU8 DoEepWriteControl(tag_EepControl *Eep)
 			- 값이 유효하여 쓰기를 진행하거나 해당영역의 마지막에 도달할 경우에만 while loop를 탈출한다.
 	*/
 
-	if((Eep->Bit.InitComplete == false) || (Eep->Bit.Write == false))
+	if((Eep->Bit.InitComplete == false) || (Eep->Config->Bit.ReadFail == true) || (Eep->Config->Bit.WriteFail == true) || (Eep->Bit.Write == false))
 	{
 		return false;
 		/* error or disabled */
@@ -172,10 +192,10 @@ tU8 DoEepWriteControl(tag_EepControl *Eep)
 
 	while(true)
 	{
-		Eep->Config->EepromRead(Eep->EepBase + (*pIndex), &Data);
+		EepRead((tag_EepCommonConfig *) Eep->Config, Eep->EepBase + (*pIndex), &Data);
 		if(Data != Eep->DataBase[*pIndex])
 		{
-			Eep->Config->EepromWrite(Eep->EepBase + (*pIndex), Eep->DataBase[*pIndex]);
+			EepWrite((tag_EepCommonConfig *) Eep->Config, Eep->EepBase + (*pIndex), Eep->DataBase[*pIndex]);
 			return true;
 			/* check valid data */
 		}
@@ -231,14 +251,14 @@ void EraseEepCommonConfigSignature(tag_EepCommonConfig *EepConfig)
 			- 본 함수 실행 후 
 	*/
 
-	if(EepConfig->Bit.Init == false)
+	if((EepConfig->Bit.Init == false) || (EepConfig->Bit.ReadFail == true) || (EepConfig->Bit.WriteFail == true))
 	{
 		return;
 	}
 	
-	EepConfig->EepromWrite(0, 0);
-	EepConfig->EepromWrite(1, 0);
-	EepConfig->EepromWrite(2, 0);
+	EepWrite(EepConfig, 0, 0);
+	EepWrite(EepConfig, 1, 0);
+	EepWrite(EepConfig, 2, 0);
 }
 /*********************************************************************************/
 

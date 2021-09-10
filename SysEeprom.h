@@ -9,10 +9,14 @@
 /*********************************************************************************/
 #include "SysTypedef.h"
 /*********************************************************************************/
-#define SYS_EEPROM_REVISION_DATE		20191001
+#define SYS_EEPROM_REVISION_DATE		20200115
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2020. 01. 15.					- 실제 Eeprom과의 정상 동작 여부 확인 기능 추가.
+	Jeong Hyun Gu					- CheckEepromError() 함수 추가. 'tag_EepCommonConfig'에서 관리 하는 실제
+													Eeprom의 정상 동작 여부 확인.
+
 	2019. 10. 01.					- EraseEepCommonConfigSignature() 함수 추가. InitEepCommonConfig()에서
 	Jeong Hyun Gu						최초 실행 여부를 확인하는데 사용하는 참조 값 Signature를 지워 다음 실행에서
 													공장 초기화 실행 가능.
@@ -70,13 +74,15 @@ typedef struct
 	{
 		tU8 Init						:		1;
 		tU8 FirstExecute		:		1;
+		tU8 ReadFail				:		1;
+		tU8 WriteFail				:		1;
 	}Bit;
 
 	const tU16 LastAddr;					// eeprom마지막 주소(크기)
 	tU16 AllocEepAddr;
 
-	tU8 (*EepromWrite)(tU16 Addr, tU8 Data);
-	tU8 (*EepromRead)(tU16 Addr, tU8 *pData);
+	tU8 (*HalEepromWrite)(tU16 Addr, tU8 Data);
+	tU8 (*HalEepromRead)(tU16 Addr, tU8 *pData);
 }tag_EepCommonConfig;
 
 typedef struct
@@ -101,10 +107,11 @@ typedef struct
 /*********************************************************************************/
 /**Function**/
 
-tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*EepromWrite)(tU16 Addr, tU8 Data), tU8 (*EepromRead)(tU16 Addr, tU8 *pData));
+tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*HalEepromWrite)(tU16 Addr, tU8 Data), tU8 (*HalEepromRead)(tU16 Addr, tU8 *pData));
 tU8 InitEepControl(tag_EepControl *Eep, const tU8 *DataBase, tU16 Length, tag_EepCommonConfig *EepConfig);
 
 #define CheckEepromFirstExecuteSignature(Eepconfig)					((Eepconfig)->Bit.FirstExecute)
+#define CheckEepromError(Eepconfig)					(((Eepconfig)->Bit.ReadFail) || ((Eepconfig)->Bit.WriteFail))
 void EraseEepCommonConfigSignature(tag_EepCommonConfig *EepConfig);
 
 void SetEepWriteEnable(tag_EepControl *Eep);
