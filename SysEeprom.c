@@ -4,9 +4,10 @@
  * File name : SysEeprom.c
 */
 /*********************************************************************************/
+#include <string.h>
 #include "SysEeprom.h"
 /*********************************************************************************/
-#if(SYS_EEPROM_REVISION_DATE != 20190723)
+#if(SYS_EEPROM_REVISION_DATE != 20190905)
 #error wrong include file. (SysEeprom.h)
 #endif
 /*********************************************************************************/
@@ -21,6 +22,8 @@ static inline tU8 CheckAllOfInit(tag_EepControl *Eep)
 tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*EepromWrite)(tU16 Addr, tU8 Data), tU8 (*EepromRead)(tU16 Addr, tU8 *pData))
 {
 	tU16 *pLastAddr = (tU16 *) &EepConfig->LastAddr;
+	static tag_EepControl EepSignature = { .Bit.InitGeneral = false };
+	volatile static tU8 StrSignature[3];
 
 	/*
 		1) 인수
@@ -40,7 +43,25 @@ tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*Eep
 	EepConfig->EepromWrite = EepromWrite;
 	EepConfig->EepromRead = EepromRead;
 	EepConfig->Bit.Init = true;
-
+	
+	memset((void *) StrSignature, 0, sizeof(StrSignature));
+	
+	InitEepControl(&EepSignature, (const tU8 *) StrSignature, sizeof(StrSignature), EepConfig);
+	DoEepReadControl(&EepSignature);
+	if((StrSignature[0] != 'J') || (StrSignature[1] != 'H') || (StrSignature[2] != 'G'))
+	{
+		DoEepReadControl(&EepSignature);
+		if((StrSignature[0] != 'J') || (StrSignature[1] != 'H') || (StrSignature[2] != 'G'))
+		{
+			StrSignature[0] = 'J'; StrSignature[1] = 'H'; StrSignature[2] = 'G';
+			SetEepWriteEnable(&EepSignature);
+			while(DoEepWriteControl(&EepSignature) == true)
+			{
+				EepConfig->Bit.FirstExecute = true;
+			}
+		}
+	}
+	
 	return EepConfig->Bit.Init;
 }
 /*********************************************************************************/
