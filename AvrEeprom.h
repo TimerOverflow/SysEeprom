@@ -7,10 +7,13 @@
 #ifndef __AVR_EEPROM_H__
 #define	__AVR_EEPROM_H__
 /*********************************************************************************/
-#define AVR_EEPROM_REVISION_DATE		20161108
+#define AVR_EEPROM_REVISION_DATE		20161130
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2016. 11. 30.					- DoEepReadControl(), GetDataFromEeprom() 함수에서 Length 보다 1바이트 더 읽던 현상 수정.
+	Jung Hyun Gu
+
 	2016. 11. 08.					- revision valid check 추가.
 	Jung Hyun Gu
 

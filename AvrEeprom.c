@@ -4,9 +4,9 @@
  * File name : AvrEeprom.c
 */
 /*********************************************************************************/
-#include "AvrEeprom.h"
+#include "include/AvrEeprom.h"
 /*********************************************************************************/
-#if(AVR_EEPROM_REVISION_DATE != 20161108)
+#if(AVR_EEPROM_REVISION_DATE != 20161130)
 #error wrong include file. (AvrEeprom.h)
 #endif
 /*********************************************************************************/
@@ -78,7 +78,7 @@ void DoEepReadControl(tag_EepControl *Eep)
 	do
 	{
 		Eep->DataBase[Index] = Eeprom_Read(Eep->EepBase + (Index));
-	}while(++Index <= Eep->Length);
+	}while(++Index < Eep->Length);
 }
 /*********************************************************************************/
 void GetDataFromEeprom(char* const Dest, const int EepBase, int Length)
@@ -101,7 +101,7 @@ void GetDataFromEeprom(char* const Dest, const int EepBase, int Length)
 	do
 	{
 		Dest[Index] = Eeprom_Read(EepBase + Index);
-	}while(++Index <= Length);
+	}while(++Index < Length);
 }
 /*********************************************************************************/
 char DoEepWriteControl(tag_EepControl *Eep)
