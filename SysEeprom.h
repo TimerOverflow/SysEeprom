@@ -9,10 +9,13 @@
 /*********************************************************************************/
 #include "SysTypedef.h"
 /*********************************************************************************/
-#define SYS_EEPROM_REVISION_DATE		20190905
+#define SYS_EEPROM_REVISION_DATE		20190924
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2019. 09. 24.					- CheckEepromFirstExecuteSignature() 매크로 함수 추가. 직접 비트 필드에
+	Jeong Hyun Gu						접근하지 않고 위 매크로 함수로 접근.
+
 	2019. 09. 05.					- 프로그램 최초 실행 감지 루틴을 모듈 내 InitEepCommonConfig() 함수에 추가.
 	Jeong Hyun Gu						이제 어플리케이션에서 시그니쳐 확인하여 초기화를 실행 여부를 판단할 필요없이
 													tag_EepCommonConfig::Bit.FirstExecute 비트가 '1'이면 최초 실행으로 판단.
@@ -97,6 +100,7 @@ typedef struct
 tU8 InitEepCommonConfig(tag_EepCommonConfig *EepConfig, tU16 LastAddr, tU8 (*EepromWrite)(tU16 Addr, tU8 Data), tU8 (*EepromRead)(tU16 Addr, tU8 *pData));
 tU8 InitEepControl(tag_EepControl *Eep, const tU8 *DataBase, tU16 Length, tag_EepCommonConfig *EepConfig);
 
+#define CheckEepromFirstExecuteSignature(Eepconfig)					((Eepconfig)->Bit.FirstExecute)
 void SetEepWriteEnable(tag_EepControl *Eep);
 void DoEepReadControl(tag_EepControl *Eep);
 tU8 DoEepWriteControl(tag_EepControl *Eep);
